@@ -269,9 +269,11 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		/ TODO - Check if there is collision between the arm and object, then issue learning reward
 		/
 		*/
-		rewardHistory = REWARD_WIN;
+		rewardHistory = REWARD_WIN;  // set rewardHistory to default value = REWARD_WIN
+
 		bool collisionGripperCheck = (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0);
 
+		// If it is a collision for gripper then double the reword
 		if (collisionGripperCheck) {
 			rewardHistory = REWARD_WIN * 2;
 		}
@@ -289,7 +291,7 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		    return;
 		}
 		else {
-			rewardHistory = rewardHistory * (-1);
+			rewardHistory = rewardHistory * (-1); // If collision is not with the tube, rewardHistory set to LOSS
 
 			newReward  = true;
 			endEpisode = true;
@@ -660,10 +662,11 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo& updateInfo)
 			lastGoalDistance = 0.0f;
 			avgGoalDelta     = 0.0f;
 
-			// track the number of wins and agent accuracy
+			// track the number of wins and agent accuracy for gripper
 			if( rewardHistory > REWARD_WIN )
 				successfulGrabs++;
 
+			// track the number of wins and agent accuracy for any part of arm
 			if (rewardHistory >= REWARD_WIN)
 				successfulArms++;
 
