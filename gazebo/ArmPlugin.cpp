@@ -273,15 +273,18 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		if (collisionCheck)
 		{
 			rewardHistory = REWARD_WIN;
+			newReward  = true;
+		    endEpisode = true;
+
+		    return;
 		}
 		else {
 			rewardHistory = REWARD_LOSS;
+
+			newReward  = true;
+			endEpisode = true;
+
 		}
-
-		newReward  = true;
-		endEpisode = true;
-
-		return;
 		
 		
 		
@@ -616,7 +619,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo& updateInfo)
 			if( episodeFrames > 1 )
 			{
 				const float distDelta  = lastGoalDistance - distGoal;
-				const float movingAvg  = 0.7f;//0.9f;
+				const float movingAvg  = 0.6f;//0.9f;
 
 				// compute the smoothed moving average of the delta of the distance to the goal
 				avgGoalDelta  = (avgGoalDelta * movingAvg) + (distDelta * (1.0f - movingAvg));
@@ -651,7 +654,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo& updateInfo)
 			if( rewardHistory >= REWARD_WIN )
 				successfulGrabs++;
 
-		    if(DEBUG){printf("ArmPlugin - rewardHistory %f\n", rewardHistory);}
+//		    if(DEBUG){printf("ArmPlugin - rewardHistory %f\n", rewardHistory);}
 
 			totalRuns++;
 			printf("Current Accuracy:  %0.4f (%03u of %03u)  (reward=%+0.2f %s)\n", float(successfulGrabs)/float(totalRuns), successfulGrabs, totalRuns, rewardHistory, (rewardHistory >= REWARD_WIN ? "WIN" : "LOSS"));
