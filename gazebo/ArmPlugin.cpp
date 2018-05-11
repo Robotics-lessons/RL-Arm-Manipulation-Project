@@ -118,6 +118,7 @@ ArmPlugin::ArmPlugin() : ModelPlugin(), cameraNode(new gazebo::transport::Node()
 	lastGoalDistance = 0.0f;
 	avgGoalDelta     = 0.0f;
 	successfulGrabs = 0;
+	successfulArms = 0;
 	totalRuns       = 0;
 }
 
@@ -189,7 +190,7 @@ bool ArmPlugin::createAgent()
 		printf("ArmPlugin - failed to allocate %ux%ux%u Tensor\n", INPUT_WIDTH, INPUT_HEIGHT, INPUT_CHANNELS);
 		return false;
 	}
-
+//	sleep(10);
 	return true;
 }
 
@@ -254,6 +255,7 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 	if( testAnimation )
 		return;
 
+
 	for (unsigned int i = 0; i < contacts->contact_size(); ++i)
 	{
 		if( strcmp(contacts->contact(i).collision2().c_str(), COLLISION_FILTER) == 0 )
@@ -267,19 +269,27 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		/ TODO - Check if there is collision between the arm and object, then issue learning reward
 		/
 		*/
-		
+		rewardHistory = REWARD_WIN;
+		bool collisionGripperCheck = (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0);
+
+		if (collisionGripperCheck) {
+			rewardHistory = REWARD_WIN * 2;
+		}
+//		printf("contact(%u).collision1 : %s\n", i, contacts->contact(i).collision1().c_str());
+//		printf("contact(%u).collision2 : %s\n", i, contacts->contact(i).collision2().c_str());
+
 		bool collisionCheck = (strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0);
-		
+
 		if (collisionCheck)
 		{
-			rewardHistory = REWARD_WIN;
+//			rewardHistory = REWARD_WIN;
 			newReward  = true;
 		    endEpisode = true;
 
 		    return;
 		}
 		else {
-			rewardHistory = REWARD_LOSS;
+			rewardHistory = rewardHistory * (-1);
 
 			newReward  = true;
 			endEpisode = true;
@@ -651,14 +661,17 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo& updateInfo)
 			avgGoalDelta     = 0.0f;
 
 			// track the number of wins and agent accuracy
-			if( rewardHistory >= REWARD_WIN )
+			if( rewardHistory > REWARD_WIN )
 				successfulGrabs++;
+
+			if (rewardHistory >= REWARD_WIN)
+				successfulArms++;
 
 //		    if(DEBUG){printf("ArmPlugin - rewardHistory %f\n", rewardHistory);}
 
 			totalRuns++;
-			printf("Current Accuracy:  %0.4f (%03u of %03u)  (reward=%+0.2f %s)\n", float(successfulGrabs)/float(totalRuns), successfulGrabs, totalRuns, rewardHistory, (rewardHistory >= REWARD_WIN ? "WIN" : "LOSS"));
-
+			printf("Accuracy -Gripper: %0.4f and -Arm: %0.4f (reward=%+0.2f %s)\n", float(successfulGrabs)/float(totalRuns)*100, float(successfulArms)/float(totalRuns)*100, rewardHistory, (rewardHistory >= REWARD_WIN ? "WIN" : "LOSS"));
+//			printf("Accuracy -Gripper: %0.4f (%03u / %03u); -Arm: %0.4f (%03u / %03u) (reward=%+0.2f %s)\n", float(successfulGrabs)/float(totalRuns), successfulGrabs, totalRuns, float(successfulArms)/float(totalRuns), successfulArms, totalRuns, rewardHistory, (rewardHistory >= REWARD_WIN ? "WIN" : "LOSS"));
 
 			for( uint32_t n=0; n < DOF; n++ )
 				vel[n] = 0.0f;
