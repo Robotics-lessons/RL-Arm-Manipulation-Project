@@ -27,7 +27,7 @@
 #define DEBUG_DQN false
 #define GAMMA 0.9f
 #define EPS_START 0.9f
-#define EPS_END 0.05f
+#define EPS_END 0.01f
 #define EPS_DECAY 200
 
 /*
@@ -37,20 +37,21 @@
 
 #define INPUT_WIDTH   64 /* 512 */
 #define INPUT_HEIGHT  64 /* 512 */
-#define OPTIMIZER "RMSprop"
+#define OPTIMIZER "RMSprop" 
+//#define OPTIMIZER "Adam" 
 #define LEARNING_RATE 0.1f
-#define REPLAY_MEMORY 10000
-#define BATCH_SIZE 32
+#define REPLAY_MEMORY 20000
+#define BATCH_SIZE 64
 #define USE_LSTM false
-#define LSTM_SIZE 128
+#define LSTM_SIZE 32
 
 /*
 / TODO - Define Reward Parameters
 /
 */
 
-#define REWARD_WIN  300.0f
-#define REWARD_LOSS -300.0f
+#define REWARD_WIN  200.0f
+#define REWARD_LOSS -200.0f
 #define REWARD_MULTIPLIER 10.0f
 
 // Define Object Names
@@ -62,6 +63,7 @@
 #define COLLISION_FILTER "ground_plane::link::collision"
 #define COLLISION_ITEM   "tube::tube_link::tube_collision"
 #define COLLISION_POINT  "arm::gripperbase::gripper_link"
+#define COLLISION_GRIPPER  "arm::gripper"
 
 // Animation Steps
 #define ANIMATION_STEPS 1000
@@ -264,34 +266,39 @@ void ArmPlugin::onCollisionMsg(ConstContactsPtr &contacts)
 		if(DEBUG){std::cout << "Collision between[" << contacts->contact(i).collision1()
 			     << "] and [" << contacts->contact(i).collision2() << "]\n";}
 
-	
+		  // std::cout << "Collision between[" << contacts->contact(i).collision1()
+		  // 	     << "] and [" << contacts->contact(i).collision2() << "]\n";
+
+		// if (contacts->contact(i).collision2().find(COLLISION_GRIPPER)!=std::string::npos) // && DEBUG)
+		// 	printf("****  Gripper collision at %s ****\n", contacts->contact(i).collision2().c_str());
 		/*
 		/ TODO - Check if there is collision between the arm and object, then issue learning reward
 		/
 		*/
-		rewardHistory = REWARD_WIN;  // set rewardHistory to default value = REWARD_WIN
+//		rewardHistory = REWARD_WIN;  // set rewardHistory to default value = REWARD_WIN
 
-		bool collisionGripperCheck = (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0);
+//		bool collisionGripperCheck = (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0);
+		bool collisionGripperCheck = (contacts->contact(i).collision2().find(COLLISION_GRIPPER)!=std::string::npos);
 
 		// If it is a collision for gripper then double the reword
-		if (collisionGripperCheck) {
-			rewardHistory = REWARD_WIN * 2;
-		}
+		// if (collisionGripperCheck) {
+		// 	rewardHistory = REWARD_WIN * 2;
+		// }
 //		printf("contact(%u).collision1 : %s\n", i, contacts->contact(i).collision1().c_str());
 //		printf("contact(%u).collision2 : %s\n", i, contacts->contact(i).collision2().c_str());
 
 		bool collisionCheck = (strcmp(contacts->contact(i).collision1().c_str(), COLLISION_ITEM) == 0);
 
-		if (collisionCheck)
+		if (collisionCheck && collisionGripperCheck)
 		{
-//			rewardHistory = REWARD_WIN;
+			rewardHistory = REWARD_WIN;
 			newReward  = true;
 		    endEpisode = true;
 
 		    return;
 		}
 		else {
-			rewardHistory = rewardHistory * (-1); // If collision is not with the tube, rewardHistory set to LOSS
+			rewardHistory = REWARD_LOSS; // If collision is not with the tube, rewardHistory set to LOSS
 
 			newReward  = true;
 			endEpisode = true;
@@ -404,6 +411,7 @@ bool ArmPlugin::updateJoints()
 
 #if 0
 		// range of motion
+
 		if( animationStep < ANIMATION_STEPS )
 		{
 			animationStep++;
@@ -601,6 +609,8 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo& updateInfo)
 		/ TODO - set appropriate Reward for robot hitting the ground.
 		/
 		*/
+		// printf("Gripper bbox x(%f,%f) y(%f,%f) z(%f,%f)\n",gripBBox.min.x, gripBBox.max.x,gripBBox.min.y, 
+		// 	                                    gripBBox.max.y,gripBBox.min.z, gripBBox.max.z);
 		
 		bool checkGroundContact = (gripBBox.min.z <= groundContact || gripBBox.max.z <= groundContact);
 		
@@ -625,17 +635,20 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo& updateInfo)
 		{
 			const float distGoal = BoxDistance(gripBBox, propBBox); // compute the reward from distance to the goal
 
-			if(DEBUG){printf("distance('%s', '%s') = %f\n", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal);}
+			if(DEBUG){printf("distance('%s', '%s') = %f ;  ", gripper->GetName().c_str(), prop->model->GetName().c_str(), distGoal);}
 
 			
 			if( episodeFrames > 1 )
 			{
 				const float distDelta  = lastGoalDistance - distGoal;
-				const float movingAvg  = 0.6f;//0.9f;
+				const float alpha  = 0.9f;//0.9f;
 
 				// compute the smoothed moving average of the delta of the distance to the goal
-				avgGoalDelta  = (avgGoalDelta * movingAvg) + (distDelta * (1.0f - movingAvg));
-				rewardHistory = avgGoalDelta * REWARD_MULTIPLIER;
+				avgGoalDelta  = (avgGoalDelta * alpha) + (distDelta * (1.0f - alpha));
+				rewardHistory = tanh(avgGoalDelta)*REWARD_WIN*REWARD_MULTIPLIER;
+				// if we are moving towards the goal
+
+		//		printf("distance %f, avgGoalDelta %f, rewardHistory = %f\n",distGoal, avgGoalDelta,rewardHistory);
 				newReward     = true;	
 			}
 
@@ -663,19 +676,19 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo& updateInfo)
 			avgGoalDelta     = 0.0f;
 
 			// track the number of wins and agent accuracy for gripper
-			if( rewardHistory > REWARD_WIN )
+			if( rewardHistory >= REWARD_WIN )
 				successfulGrabs++;
 
 			// track the number of wins and agent accuracy for any part of arm
-			if (rewardHistory >= REWARD_WIN)
-				successfulArms++;
+			// if (rewardHistory >= REWARD_WIN)
+			// 	successfulArms++;
 
 //		    if(DEBUG){printf("ArmPlugin - rewardHistory %f\n", rewardHistory);}
 
 			totalRuns++;
-			printf("Accuracy -Gripper: %0.4f and -Arm: %0.4f (reward=%+0.2f %s)\n", float(successfulGrabs)/float(totalRuns)*100, float(successfulArms)/float(totalRuns)*100, rewardHistory, (rewardHistory >= REWARD_WIN ? "WIN" : "LOSS"));
+//			printf("Accuracy ->Gripper(%03u): %0.2f; ->Arm(%03u): %0.2f; Total: %03u (reward=%+0.0f %s)\n", successfulGrabs, float(successfulGrabs)/float(totalRuns)*100, successfulArms, float(successfulArms)/float(totalRuns)*100, totalRuns, rewardHistory, (rewardHistory >= REWARD_WIN ? "WIN" : "LOSS"));
 //			printf("Accuracy -Gripper: %0.4f (%03u / %03u); -Arm: %0.4f (%03u / %03u) (reward=%+0.2f %s)\n", float(successfulGrabs)/float(totalRuns), successfulGrabs, totalRuns, float(successfulArms)/float(totalRuns), successfulArms, totalRuns, rewardHistory, (rewardHistory >= REWARD_WIN ? "WIN" : "LOSS"));
-
+			printf("Current Accuracy: %0.2f (%03u of %03u)  (reward=%.2f %s)\n", float(successfulGrabs)/float(totalRuns), successfulGrabs, totalRuns, rewardHistory, (rewardHistory >= REWARD_WIN ? "WIN" : "LOSS"));
 			for( uint32_t n=0; n < DOF; n++ )
 				vel[n] = 0.0f;
 		}
