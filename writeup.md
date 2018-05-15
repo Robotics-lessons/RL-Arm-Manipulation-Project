@@ -32,7 +32,7 @@ In this project used a Gazebo environment to build a 3D Robotic Arm Manipulator 
 
 
 <video width="320" height="240" controls>
-  <source src="images/RL_Manipulator_Arm.mp4" type="video/mp4">
+  <source src="https://github.com/Robotics-lessons/RL-Arm-Manipulation-Project/blob/master/images/RL_Manipulator_Arm.mp4" type="video/mp4">
 </video>
 
 
