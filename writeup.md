@@ -37,7 +37,7 @@ In this project used a Gazebo environment to build a 3D Robotic Arm Manipulator 
 
 
 
-```
+
 <script src="http://vjs.zencdn.net/4.0/video.js"></script>
 
 <video id="pelican-installation" class="video-js vjs-default-skin" controls
@@ -45,7 +45,7 @@ preload="auto" width="683" height="384" poster="images/gazebo_arm.jpg"
 data-setup="{}">
 <source src="images/RL_Manipulator_Arm.mp4" type='video/mp4'>
 </video>
-```
+
 
 
 #### Model creation:
