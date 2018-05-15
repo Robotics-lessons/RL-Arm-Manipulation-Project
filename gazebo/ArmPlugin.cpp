@@ -41,17 +41,17 @@
 //#define OPTIMIZER "Adam" 
 #define LEARNING_RATE 0.1f
 #define REPLAY_MEMORY 20000
-#define BATCH_SIZE 64
+#define BATCH_SIZE 32
 #define USE_LSTM false
-#define LSTM_SIZE 32
+#define LSTM_SIZE 256
 
 /*
 / TODO - Define Reward Parameters
 /
 */
 
-#define REWARD_WIN  5.0f
-#define REWARD_LOSS -5.0f
+#define REWARD_WIN  20.0f
+#define REWARD_LOSS -20.0f
 #define REWARD_MULTIPLIER 10.0f
 
 // Define Object Names
@@ -648,7 +648,7 @@ void ArmPlugin::OnUpdate(const common::UpdateInfo& updateInfo)
 				rewardHistory = tanh(avgGoalDelta)*REWARD_WIN*REWARD_MULTIPLIER;
 				// if we are moving towards the goal
 
-		//		printf("distance %f, avgGoalDelta %f, rewardHistory = %f\n",distGoal, avgGoalDelta,rewardHistory);
+//				printf("distance %f, avgGoalDelta %f, rewardHistory = %f\n",distGoal, avgGoalDelta,rewardHistory);
 				newReward     = true;	
 			}
 
