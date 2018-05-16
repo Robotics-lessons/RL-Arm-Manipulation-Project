@@ -29,26 +29,9 @@ This project used a Gazebo environment to build a 3D Robotic Arm Manipulator mod
 #### Data Acquisition:
 
 
+[![Watch the video](images/arm-video.jpg)](https://youtu.be/vDM-J5Cjrjo)
 
-<video width="320" height="240" controls>
-  <source src="https://github.com/Robotics-lessons/RL-Arm-Manipulation-Project/blob/master/images/RL_Manipulator_Arm.mp4" type="video/mp4">
-</video>
-
-
-
-
-<script src="http://vjs.zencdn.net/4.0/video.js"></script>
-
-<video id="pelican-installation" class="video-js vjs-default-skin" controls
-preload="auto" width="683" height="384" poster="images/gazebo_arm.jpg"
-data-setup="{}">
-<source src="https://github.com/Robotics-lessons/RL-Arm-Manipulation-Project/blob/master/images/RL_Manipulator_Arm.mp4" type='video/mp4'>
-</video>
-
-
-<iframe width="854" height="480" src="https://github.com/Robotics-lessons/RL-Arm-Manipulation-Project/blob/master/images/RL_Manipulator_Arm.mp4" frameborder="0" allowfullscreen></iframe>
-
-[![Watch the video](images/gazebo_arm.jpg)](https://youtu.be/1qWoznivuXw)
+[![Watch the video](images/gripper-video.jpg)](https://youtu.be/1qWoznivuXw)
 
 
 #### Model creation:
