@@ -11,9 +11,8 @@ The goal is to create a DQN agent and define reward functions to teach a robotic
 
 ### Introduction 
 
+This project used a Gazebo environment to build a 3D Robotic Arm Manipulator model and used C++ language to develop the plugin code.
 
-
-In this project used a Gazebo environment to build a 3D Robotic Arm Manipulator model and used C++ language to develop the plugin code.
 
 
 
@@ -48,6 +47,8 @@ data-setup="{}">
 
 
 <iframe width="854" height="480" src="https://github.com/Robotics-lessons/RL-Arm-Manipulation-Project/blob/master/images/RL_Manipulator_Arm.mp4" frameborder="0" allowfullscreen></iframe>
+
+[![Watch the video](images/gazebo_arm.jpg)](images/RL_Manipulator_Arm.mp4)
 
 
 #### Model creation:
