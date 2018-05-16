@@ -14,9 +14,12 @@ The goal is to create a DQN agent and define reward functions to teach a robotic
 This project used a Gazebo environment to build a 3D Robotic Arm Manipulator model and used C++ language to develop the Plugin code.
 
 There are three main components to this gazebo file, which define the environment:
-    ​ The robotic arm with a gripper attached to it.
-    ​ A camera sensor, to capture images to feed into the DQN.
+
+    ​ The robotic arm with a gripper attached to it.    
+    ​ A camera sensor, to capture images to feed into the DQN.    
     ​ A cylindrical object or **prop**.
+
+<img src="images/gazebo_arm.jpg" width="70%" height="60%" title="GoogLeNet P1 Model">
 
 #### Arm Plugin
 The robotic arm model, found in the gazebo-arm.world file, calls upon a gazebo plugin called the ArmPlugin. This plugin is responsible for creating the DQN agent and training it to learn to touch the prop. The gazebo plugin shared object file, libgazeboArmPlugin.so, attached to the robot model in gazebo-arm.world, is responsible for integrating the simulation environment with the RL agent. The plugin is defined in the ArmPlugin.cpp file, also located in the gazebo folder.
@@ -26,7 +29,7 @@ The robotic arm model, found in the gazebo-arm.world file, calls upon a gazebo p
 ​         
 
 
-<img src="images/gazebo_arm.jpg" width="70%" height="60%" title="GoogLeNet P1 Model">
+
 
 <img src="images/nv-rl-stack-diagram.jpg" width="80%" height="80%" title="GoogLeNet P1 Model">
 
@@ -54,16 +57,16 @@ After implementing the code and adjusting the hyperparameters, the network achie
 
     1. Have any part of the robot arm touch the object of interest, with at least a 90% accuracy.
 
-[![Watch the video](images/arm-video.jpg)](https://youtu.be/vDM-J5Cjrjo)
+[![Watch the video https://youtu.be/vDM-J5Cjrjo](images/arm-video.jpg)](https://youtu.be/vDM-J5Cjrjo)
 
     2. Have only the gripper base of the robot arm touch the object, with at least a 80% accuracy.
 
-[![Watch the video](images/gripper-video.jpg)](https://youtu.be/1qWoznivuXw)
+[![Watch the video https://youtu.be/1qWoznivuXw](images/gripper-video.jpg)](https://youtu.be/1qWoznivuXw)
 
-|  Item Name  | Any part of Arm | Gripper Base |
+|  Item Name  | Gripper Base | Any part of Arm |
 | ------------ | :----------: | :-----------: |
-| Touched prop | 67 | 359 | 
-| Total Run | 83 | 401 | 
+| Touched prop | 67 | 359 |
+| Total Run | 83 | 401 |
 | Percentage | 81% | 90% |
 
 
