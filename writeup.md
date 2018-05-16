@@ -11,11 +11,15 @@ The goal is to create a DQN agent and define reward functions to teach a robotic
 
 ### Introduction 
 
-This project used a Gazebo environment to build a 3D Robotic Arm Manipulator model and used C++ language to develop the plugin code.
+This project used a Gazebo environment to build a 3D Robotic Arm Manipulator model and used C++ language to develop the Plugin code.
 
+There are three main components to this gazebo file, which define the environment:
+    ​ The robotic arm with a gripper attached to it.
+    ​ A camera sensor, to capture images to feed into the DQN.
+    ​ A cylindrical object or **prop**.
 
-
-
+#### Arm Plugin
+The robotic arm model, found in the gazebo-arm.world file, calls upon a gazebo plugin called the ArmPlugin. This plugin is responsible for creating the DQN agent and training it to learn to touch the prop. The gazebo plugin shared object file, libgazeboArmPlugin.so, attached to the robot model in gazebo-arm.world, is responsible for integrating the simulation environment with the RL agent. The plugin is defined in the ArmPlugin.cpp file, also located in the gazebo folder.
 
 ### Background / Formulation
 
@@ -29,9 +33,9 @@ This project used a Gazebo environment to build a 3D Robotic Arm Manipulator mod
 #### Data Acquisition:
 
 
-[![Watch the video](images/arm-video.jpg)](https://youtu.be/vDM-J5Cjrjo)
 
-[![Watch the video](images/gripper-video.jpg)](https://youtu.be/1qWoznivuXw)
+
+
 
 
 #### Model creation:
@@ -44,37 +48,31 @@ This project used a Gazebo environment to build a 3D Robotic Arm Manipulator mod
 
 
 
-#### Results
+### Results
 
+After implementing the code and adjusting the hyperparameters, the network achieved the required objectives.
 
+    1. Have any part of the robot arm touch the object of interest, with at least a 90% accuracy.
 
-|              | Dog A (Dany) | Dog B (Raise) | No object (Nothing) |
-| ------------ | :----------: | :-----------: | :-----------------: |
-| iPhone images | 193 | 156 | 62 |
-| Augment generated images | 887 | 998 | 612 |
-| Total images  | 1080 | 1154 | 674 |
+[![Watch the video](images/arm-video.jpg)](https://youtu.be/vDM-J5Cjrjo)
 
-The dog database was created as:
+    2. Have only the gripper base of the robot arm touch the object, with at least a 80% accuracy.
 
-|              | Training | Validating | Testing |
-| ------------ | :----------: | :-----------: | :-----------------: |
-| Image number | 2185 | 695 | 28 |
-| Percentage | 75% | 24% | 1% |
+[![Watch the video](images/gripper-video.jpg)](https://youtu.be/1qWoznivuXw)
 
+|  Item Name  | Any part of Arm | Gripper Base |
+| ------------ | :----------: | :-----------: |
+| Touched prop | 67 | 359 | 
+| Total Run | 83 | 401 | 
+| Percentage | 81% | 90% |
 
-
-####  Results: 
-
-
-
-### Discussion
 
 ### Conclusion 
 
 ### Future Work
 
 1. Install Nvidia DIGITS system on local PC instead of using cloud GPU resource, the way is no time limitation to implement and test different projects and models.
-2.  Include testing object detection and segmentation implementation, and deploying the model on Jetson TX2 board and testing them in real world environment.
+2.  Deploying the model  and package on Jetson TX2 board and testing them again.
 
 ### References
 
