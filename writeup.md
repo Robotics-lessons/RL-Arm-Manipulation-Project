@@ -17,11 +17,13 @@ This project used a Gazebo environment to build a 3D Robotic Arm Manipulator mod
 
 There are three main components to this gazebo file, which define the environment:
 
-     The robotic arm with a gripper attached to it.    
+​    I. The robotic arm with a gripper attached to it.    
     
-     A camera sensor, to capture images to feed into the DQN.   
+​    II. A camera sensor, to capture images to feed into the DQN.   
     
-     A cylindrical object or **prop**.
+​    III. A cylindrical object or **prop**.
+
+
 
 <img src="images/gazebo_arm.jpg" width="70%" height="60%" title="GoogLeNet P1 Model">
 
@@ -52,11 +54,13 @@ After implementing the code and adjusting the hyperparameters, the network achie
     1. Have any part of the robot arm touch the object of interest, with at least a 90% accuracy.
 
 <a href="https://youtu.be/vDM-J5Cjrjo">Video link for Arm testing</a>
+
 [![Watch the video](images/arm-video.jpg)](https://youtu.be/vDM-J5Cjrjo)
 
     2. Have only the gripper base of the robot arm touch the object, with at least a 80% accuracy.
 
-<a href="https://youtu.be/1qWoznivuXw">Video link for Gripper base testing</a>
+Video link for Gripper base testing(https://youtu.be/1qWoznivuXw)
+
 [![Watch the video](images/gripper-video.jpg)](https://youtu.be/1qWoznivuXw)
 
 |  Item Name  | Gripper Base | Any part of Arm |
