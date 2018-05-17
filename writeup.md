@@ -86,7 +86,7 @@ Complete each of those tasks in the following order [ArmPlugin.cpp file](https:/
 
    In [Gazebo’s API](http://osrf-distributions.s3.amazonaws.com/gazebo/api/2.2.1/classgazebo_1_1physics_1_1Model.html#a27cf5a6ec66f6a5c03ebf05ff9592c9a)[2], there is a function called `GetBoundingBox()` which returns the minimum and maximum values of a box that defines that particular object/model corresponding to the x, y, and z axes.
 
-   Using the above function to check if the gripper is hitting the ground or not, and assign an appropriate reward. The bounding box for the gripper, and a threshold value have already been defined in the `ArmPlugin::OnUpdate()` method.
+   Using the above function to check if the gripper is hitting the ground (REWARD_LOSS) or not(REWARD_WIN), and assign an appropriate reward. The bounding box for the gripper, and a threshold value have already been defined in the `ArmPlugin::OnUpdate()` method.
 
 5. Issue an interim reward based on the distance to the object
 
@@ -96,6 +96,7 @@ Complete each of those tasks in the following order [ArmPlugin.cpp file](https:/
 
    ```
    average_delta  = (average_delta * alpha) + (dist * (1 - alpha));
+   rewardHistory = tanh(avgGoalDelta)*REWARD_WIN*REWARD_MULTIPLIER;
    ```
 
 6. Issue a reward based on collision between the arm and the object
@@ -125,7 +126,11 @@ Complete each of those tasks in the following order [ArmPlugin.cpp file](https:/
 
    For this task of the project, modify the collision check defined in task 6, to check for collision between the gripper base and the object. And then, assign the appropriate reward.
 
-  
+   ````
+   bool collisionGripperCheck = (strcmp(contacts->contact(i).collision2().c_str(), COLLISION_POINT) == 0);
+   ````
+
+   
 
 
 ##### The hyper parameter setting and turning:  
@@ -184,11 +189,13 @@ Video link for Gripper base testing(https://youtu.be/8szf34IS1WE)
 
 ### Conclusion 
 
-
+Both objectives: the robot arm touching the object with at least a 90% accuracy for a minimum of 100 runs and the arm's gripper base touching the object with at least a 80% accuracy for a minimum of 100 runs were achieve in reasonable iterator.  The DQN agent received the camera images and sensor data and trained the network well and took the correct actions on robot arm.
 
 ### Future Work
 
-1. Trying Project Challenges in this project:
+1.  The LSTM method was not used in both results because there was so many Loss when starting train, one of future work is to spend more time to adjust different hyper parameters to make LSTM working.
+
+2.  Trying Project Challenges in this project:
 
    A. Object Randomization
 
@@ -202,7 +209,7 @@ Video link for Gripper base testing(https://youtu.be/8szf34IS1WE)
 
      It will build on top of the previous challenge.
 
-2. Deploying the model  and package on Jetson TX2 board and testing them again.
+3. Deploying the model  and package on Jetson TX2 board and testing them again.
 
 ### References
 
