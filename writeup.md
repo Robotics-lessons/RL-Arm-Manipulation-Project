@@ -169,7 +169,7 @@ After implementing the code and adjusting the hyper parameters, the network achi
 
 1.   The end objective of the robot arm touching the object with at least a 90% accuracy for a minimum of 100 runs.
 
-<a href="https://youtu.be/vDM-J5Cjrjo">Video link for Arm testing</a>
+Video link for Arm testing (https://youtu.be/vDM-J5Cjrjo)
 
 [![Watch the video](images/arm-video.jpg)](https://youtu.be/vDM-J5Cjrjo)
 
@@ -177,7 +177,7 @@ After implementing the code and adjusting the hyper parameters, the network achi
 
 2.  The end objective of the arm's gripper base touching the object with at least a 80% accuracy for a minimum of 100 runs.
 
-Video link for Gripper base testing(https://youtu.be/8szf34IS1WE)
+Video link for Gripper base testing (https://youtu.be/8szf34IS1WE)
 
 [![Watch the video](images/gripper-video.jpg)](https://youtu.be/8szf34IS1WE)
 
