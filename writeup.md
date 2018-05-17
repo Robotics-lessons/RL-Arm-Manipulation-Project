@@ -197,17 +197,17 @@ Both objectives: the robot arm touching the object with at least a 90% accuracy 
 
 2.  Trying Project Challenges in this project:
 
-   A. Object Randomization
+     A. Object Randomization
 
-   ​     In the project, so far, the object of interest was placed at the same location, throughout. For this challenge, the object will instantiate at different locations along the x-axis. 
+   ​     In the project, so far, the object of interest was placed at the same location, throughout. For this     challenge, the object will instantiate at different locations along the x-axis. 
 
-   B. Increasing the Arm’s Reach
+     B. Increasing the Arm’s Reach
 
    ​    In this challenge, the object’s starting location will be changed, and the arm will be allowed to rotate about its base instead of disabling to restrict the arm’s reach to a specific axis.
 
-   C. Increasing Arm’s Reach with Object Randomization
+     C. Increasing Arm’s Reach with Object Randomization
 
-     It will build on top of the previous challenge.
+   ​    It will build on top of the previous challenge.
 
 3. Deploying the model  and package on Jetson TX2 board and testing them again.
 
